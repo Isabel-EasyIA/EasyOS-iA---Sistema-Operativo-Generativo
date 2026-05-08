@@ -1,6 +1,6 @@
 ![Portada de EasyOS iA](Imagenes/Inicio.png)
 
-# ✨ EasyOS iA — El Sistema Operativo Generativo 🇪🇸
+# ✨ EasyOS iA — Sistema Operativo Generativo 🇪🇸
 
 [![Electron](https://img.shields.io/badge/Runtime-Electron-47848F?logo=electron&logoColor=white)](https://www.electronjs.org/)
 [![JavaScript](https://img.shields.io/badge/Language-JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/es/docs/Web/JavaScript)
