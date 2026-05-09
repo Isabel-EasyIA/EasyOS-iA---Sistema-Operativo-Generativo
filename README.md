@@ -14,7 +14,7 @@ Constituye un ecosistema **Zero-Baseline** de vanguardia, diseñado para autocon
 
 El software no existe, se genera cuando el usuario lo necesita, pídaselo a su Modelo iA, el creara su aplicación y la tendrás disponible en el Sistema.
 
-                   **El entorno computacional debe adaptarse dinámicamente a las necesidades**
+                    [ El entorno computacional debe adaptarse dinámicamente a las necesidades ]
 
 > [!IMPORTANT]
 > **Technical Demo:** Esta implementación es una demostración técnica avanzada para validar el concepto de sistemas operativos generativos y computación dirigida por IA.
