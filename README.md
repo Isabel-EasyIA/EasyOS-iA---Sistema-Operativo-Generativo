@@ -18,6 +18,7 @@ El software no existe, se genera cuando el usuario lo necesita, pídaselo a su M
 
 > [!IMPORTANT]
 > **Technical Demo:** Esta implementación es una demostración técnica para validar el concepto de sistemas operativos generativos y computación dirigida por IA.
+> 
 > Se trata de un entorno experimental donde la interfaz, las aplicaciones y el comportamiento del sistema no están preprogramados de forma estática, sino que son generados dinámicamente por modelos de lenguaje en tiempo real.
 
 ---
