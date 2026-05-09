@@ -34,7 +34,7 @@ El sistema está diseñado para ofrecer una experiencia visual de alto nivel (UX
 -   **Motor Visual:** HTML5, CSS3 con efectos de **Glassmorphism** y animaciones dinámicas de fondo (blobs).
 -   **Runtime Nativo:** Ejecutado sobre **Electron (Node.js)**, lo que permite romper el sandbox del navegador para acceder al sistema de archivos, ejecutar procesos hijos (Python, Node, C++, etc.) y navegar sin problemas de CORS.
 -   **Cerebro (IA):** Compatible con cualquier modelo que soporte el protocolo OpenAI API (Llama 3, GPT-4, modelos locales vía Ollama o vLLM).
--   **Protocolo DSL:** Utiliza un delimitador seguro `|||` para la transferencia de argumentos complejos y bloques de código entre el razonamiento de la IA y la ejecución del Kernel.
+-   **Sintaxis de Comandos Simplificada:** Utiliza un formato natural y legible `easyos.comando{[p1], [p2], ...}` que permite a la IA invocar acciones del sistema de forma fluida y multitarea, sin necesidad de estructuras JSON rígidas.
 
 ---
 
@@ -77,21 +77,21 @@ EasyOS iA es un sistema multiusuario por diseño físico:
 
 ---
 
-## ⚡ API de Primitivas (Las Leyes de la Realidad)
+## ⚡ API de Primitivas (Sintaxis AI)
 
-La IA interactúa con el mundo físico mediante el objeto global `EasyOS`. Estas funciones son las herramientas que la IA "invoca" para materializar sus decisiones:
+La IA interactúa con el mundo físico mediante comandos simplificados que el Kernel interpreta en tiempo real. Estos comandos pueden incluirse directamente en la respuesta de la IA:
 
-| Primitiva | Función | Descripción Técnica |
+| Comando AI | Acción | Descripción Técnica |
 | :--- | :--- | :--- |
-| `EasyOS.saveFile(emoji, name, content)` | **Materializar Archivo** | Crea un archivo físico en el disco con persistencia real. |
-| `EasyOS.createFolder(emoji, name)` | **Estructurar Disco** | Crea directorios reales en el filesystem del usuario. |
-| `EasyOS.runCommand(cmd)` | **Ejecutar Poder** | Ejecuta comandos de sistema (npm, python, git) de forma nativa. |
-| `EasyOS.createWindow(opts)` | **Generar Espacio** | Crea una ventana flotante con contenido HTML/JS inyectado. |
-| `EasyOS.App(opts)` | **Desplegar App** | Inyecta una aplicación completa con su propio contexto de ejecución. |
-| `EasyOS.buildSkill(opts)` | **Evolucionar** | Guarda una aplicación generada como una extensión persistente (.js). |
-| `EasyOS.removeItem(id)` | **Destruir** | Elimina tanto el icono visual como el archivo físico asociado. |
-| `EasyOS.easyos_editor(path)` | **Editor Pro** | Abre el editor oficial `EasyOS_Editor` con soporte para archivos. |
-| `EasyOS.easyos_terminal()` | **Terminal Pro** | Abre la terminal oficial con soporte para comandos complejos. |
+| `easyos.savefile{[emoji], [name], [content]}` | **Guardar Archivo** | Crea o sobreescribe un archivo físico en el disco del usuario. |
+| `easyos.createfolder{[emoji], [name]}` | **Crear Carpeta** | Crea directorios reales en el filesystem para organizar datos. |
+| `easyos.runcommand{[comando]}` | **Ejecutar Proceso** | Ejecuta comandos de sistema (npm, python, git) de forma nativa. |
+| `easyos.buildskill{[name], [emoji], [html]}` | **Construir Skill** | Genera y guarda una nueva aplicación persistente (.js). |
+| `easyos.removeitem{[ruta]}` | **Eliminar Item** | Borra archivos o carpetas del sistema físico. |
+| `easyos.easyos_webbrowser{[url], [titulo]}` | **Navegador** | Abre el explorador web en una URL específica. |
+| `easyos.easyos_editor{[ruta]}` | **Editor Pro** | Abre el editor oficial con acceso al archivo indicado. |
+| `easyos.easyos_terminal{[ruta], [cmd]}` | **Terminal Pro** | Abre la consola nativa en una ruta y ejecuta un comando. |
+| `easyos.editskill{[name]}` | **Editar Skill** | Abre el código fuente de una aplicación para modificarla. |
 
 ---
 
@@ -118,7 +118,7 @@ Un navegador interno optimizado para visualizar tanto URLs externas como archivo
 A pesar de su apertura, EasyOS iA implementa capas de protección críticas:
 -   **Protección del Núcleo:** Los métodos definidos en `SystemAPI.coreMethods` son inmutables. Ninguna skill o código generado puede sobrescribir las funciones vitales del sistema.
 -   **Validación de Rutas:** Todas las operaciones de archivos están ancladas al directorio del usuario, evitando que la IA o el código generado puedan acceder a archivos sensibles del sistema operativo anfitrión.
--   **Sandbox DSL:** El kernel pre-procesa las llamadas para asegurar que los bloques de código extensos no rompan la sintaxis de ejecución.
+-   **Iterative Command Parser:** El kernel utiliza un motor de análisis iterativo que protege la integridad de los datos, permitiendo la transferencia de código complejo (HTML/CSS/JS) sin errores de sintaxis.
 
 ---
 
@@ -166,6 +166,9 @@ Para poner en marcha tu propio EasyOS iA:
 Este proyecto está bajo la licencia **ISC**. Siéntete libre de explorar, modificar y construir tu propio futuro generativo.
 
 ---
+
+![Consola de Sistema](Imagenes/Chat.png)
+
 *Desarrollado con **Antigravity de Google AI** ❤️ y sus Modelos LLMs Gratuitos.*
 
-
+---

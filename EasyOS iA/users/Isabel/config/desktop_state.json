@@ -1,0 +1,39 @@
+{
+  "windows": [
+    {
+      "title": "Sistema Solar",
+      "icon": "🪐",
+      "type": "folder",
+      "path": "EasyOS iA/users/Isabel/documents/Sistema Solar",
+      "id": "icon-yaqmd95m5",
+      "x": "30px",
+      "y": "30px",
+      "isRestoring": true
+    },
+    {
+      "title": "Sistema Solar",
+      "content": "<div class=\"file-grid\" style=\"display: grid; grid-template-columns: repeat(auto-fill, 80px); gap: 20px; padding: 20px;\">\n                <div class=\"desktop-icon\" ondblclick=\"EasyOS.handleFileClick('EasyOS iA/users/Isabel/documents/Sistema Solar/index_vista_militar.html', false, 'index_vista_militar.html')\">\n                    <div class=\"icon-visual\">📄</div>\n                    <div class=\"icon-label\">index vista militar.html</div>\n                </div>\n            </div>",
+      "width": "279px",
+      "height": "281px",
+      "path": "EasyOS iA/users/Isabel/documents/Sistema Solar",
+      "id": "win-tdiilog12",
+      "type": "window",
+      "x": "20px",
+      "y": "159px",
+      "isRestoring": true
+    },
+    {
+      "title": "🌐 Navegador Web",
+      "content": "\n                <div style=\"display:flex; flex-direction:column; height:100%; font-family:sans-serif; background:#f1f3f4;\">\n                    <div style=\"display:flex; gap:10px; padding:8px 15px; background:#dee1e6; border-bottom:1px solid #ccc; align-items:center;\">\n                        <div style=\"display:flex; gap:5px;\">\n                            <button id=\"back-web-4iy5qi2fu\" style=\"background:none; border:none; cursor:pointer; font-size:1.2rem; color:#5f6368;\">◀</button>\n                            <button id=\"forward-web-4iy5qi2fu\" style=\"background:none; border:none; cursor:pointer; font-size:1.2rem; color:#5f6368;\">▶</button>\n                            <button id=\"reload-web-4iy5qi2fu\" style=\"background:none; border:none; cursor:pointer; font-size:1.2rem; color:#5f6368;\">↻</button>\n                        </div>\n                        <div style=\"flex:1; display:flex; align-items:center; background:white; border-radius:20px; padding:4px 12px; border:1px solid #ced4da;\">\n                            <span style=\"margin-right:8px; font-size:0.8rem;\">🔒</span>\n                            <input id=\"url-input-web-4iy5qi2fu\" type=\"text\" value=\"file://E:/Virtual VM IA Agentica/Proyecto 2026 EasyOS iA/Mejorando EasyOS iA/EasyOS iA/EasyOS iA/users/Isabel/documents/Sistema Solar/index_vista_militar.html\" \n                                style=\"width:100%; border:none; outline:none; font-size:0.9rem; color:#202124;\">\n                        </div>\n                    </div>\n                    <webview id=\"view-web-4iy5qi2fu\" src=\"file://E:/Virtual VM IA Agentica/Proyecto 2026 EasyOS iA/Mejorando EasyOS iA/EasyOS iA/EasyOS iA/users/Isabel/documents/Sistema Solar/index_vista_militar.html\" style=\"flex:1; width:100%; background:white;\" \n                        allowpopups \n                        webpreferences=\"contextIsolation=no, allowRunningInsecureContent=yes\"></webview>\n                </div>\n            ",
+      "width": "632px",
+      "height": "532px",
+      "id": "win-oyfibst85",
+      "type": "window",
+      "x": "904px",
+      "y": "34px"
+    }
+  ],
+  "currentSession": "bienvenida easyos ia",
+  "rootPath": "",
+  "chatHidden": false
+}

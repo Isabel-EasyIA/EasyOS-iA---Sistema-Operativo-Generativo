@@ -3,12 +3,18 @@ import { isElectron, ipcRenderer } from './env.js';
 import { SystemAPI } from './api.js';
 import { addMessage, loadHistory, getChatHistory } from './chat.js';
 
-function addSystemMessage(text) {
+function addSystemMessage(text, type = 'info') {
     const chatHistory = document.getElementById('chat-history');
     if (!chatHistory) return;
     const msgDiv = document.createElement('div');
-    msgDiv.className = 'message ai-message';
-    msgDiv.innerHTML = `<em style="color: rgba(255,255,255,0.5);">${text}</em>`;
+    msgDiv.className = `message system-message ${type}`;
+    
+    let color = 'rgba(255,255,255,0.5)';
+    if (type === 'success') color = '#10b981';
+    if (type === 'error') color = '#ef4444';
+    if (type === 'cmd') color = '#6366f1';
+
+    msgDiv.innerHTML = `<div style="color: ${color}; font-size: 0.85rem; font-family: var(--font-mono);">${text}</div>`;
     chatHistory.appendChild(msgDiv);
     chatHistory.scrollTo({ top: chatHistory.scrollHeight, behavior: 'smooth' });
 }
@@ -53,28 +59,43 @@ function createSandbox() {
 async function executeJSONCommand(comando) {
     if (!comando || !comando.accion) return false;
 
-    console.log('Kernel: Ejecutando comando JSON:', comando);
     const { accion, parametros } = comando;
     const args = parametros ? Object.values(parametros) : [];
 
+    // Notificar inicio en el chat
+    addSystemMessage(`> Ejecutando: ${accion}...`, 'cmd');
+
     try {
-        if (accion === 'buildSkill') {
-            // Caso especial: buildSkill espera 4 argumentos (name, html, css, js)
-            await window.EasyOS.buildSkill(parametros.name, parametros.html, parametros.css, parametros.js);
-        } else if (accion === 'createFolder') {
-            await window.EasyOS.createFolder(parametros.emoji, parametros.name);
-        } else if (accion === 'saveFile') {
-            await window.EasyOS.saveFile(parametros.emoji, parametros.name, parametros.content);
-        } else if (window.EasyOS[accion] && typeof window.EasyOS[accion] === 'function') {
-            // Ejecución dinámica para el resto de funciones
-            const result = window.EasyOS[accion](...args);
-            if (result && typeof result.then === 'function') await result;
+        // Normalizar nombre de acción (por si la IA lo manda en minúsculas)
+        const normalizedAccion = Object.keys(window.EasyOS).find(
+            key => key.toLowerCase() === accion.toLowerCase()
+        ) || accion;
+
+        let result;
+        if (normalizedAccion === 'buildSkill') {
+            result = await window.EasyOS.buildSkill(parametros);
+        } else if (normalizedAccion === 'createFolder') {
+            result = await window.EasyOS.createFolder(parametros.emoji, parametros.name);
+        } else if (normalizedAccion === 'saveFile') {
+            result = await window.EasyOS.saveFile(parametros.emoji, parametros.name, parametros.content);
+        } else if (window.EasyOS[normalizedAccion] && typeof window.EasyOS[normalizedAccion] === 'function') {
+            result = window.EasyOS[normalizedAccion](...args);
+            if (result && typeof result.then === 'function') result = await result;
         } else {
             throw new Error(`Acción desconocida: ${accion}`);
         }
+
+        // Si es un comando de sistema (runCommand), mostrar el output si existe
+        if (accion.toLowerCase() === 'runcommand' && result) {
+            if (result.stdout) addSystemMessage(result.stdout.trim());
+            if (result.stderr) addSystemMessage(result.stderr.trim(), 'error');
+        }
+
+        addSystemMessage(`✓ ${accion} completado con éxito`, 'success');
         return true;
     } catch (e) {
-        console.error('Error ejecutando comando JSON:', e);
+        console.error('Error ejecutando comando:', e);
+        addSystemMessage(`✗ Error en ${accion}: ${e.message}`, 'error');
         window.EasyOS.notify('Error: ' + e.message);
         return false;
     }

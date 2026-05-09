@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema Solar 3D Animado - Vista Dinámica</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000000;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            color: white;
+            padding: 15px 30px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            font-family: sans-serif;
+            text-align: center;
+        }
+
+        #speedSlider {
+            width: 300px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body id="container">
+
+    <!-- Controles de Velocidad -->
+    <div id="controls">
+        <h2 style="font-size: 1.2em;">Control de Velocidad Orbital</h2>
+        <input type="range" id="speedSlider" min="0.1" max="2" value="1" step="0.1">
+        <span id="speedValue">Velocidad: 1.0x</span>
+        <p style="font-size: 0.8em; margin-top: 10px;">💡 Usa el ratón para rotar y zoom.</p>
+    </div>
+
+    <!-- Importamos Three.js y OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        // ====================================================================
+        // CONFIGURACIÓN DEL SISTEMA SOLAR
+        // ====================================================================
+
+        const solarSystemConfig = [
+            { name: "Sol", radius: 10, distance: 0, color: 0xFFAA00, isStar: true, period: 0 },
+            { name: "Mercurio", radius: 0.5, distance: 15, color: 0x888888, period: 4 },
+            { name: "Venus", radius: 0.8, distance: 25, color: 0xE07030, period: 7 },
+            { name: "Tierra", radius: 1.0, distance: 35, color: 0x0077FF, period: 9 },
+            { name: "Marte", radius: 0.7, distance: 48, color: 0xC03030, period: 11 },
+            { name: "Júpiter", radius: 3.0, distance: 65, color: 0xCCAA66, period: 15 },
+            { name: "Saturno", radius: 2.5, distance: 85, color: 0xDDAA88, period: 20 },
+            { name: "Urano", radius: 1.8, distance: 100, color: 0x77CCFF, period: 25 },
+            { name: "Neptuno", radius: 1.8, distance: 120, color: 0x0033AA, period: 30 }
+        ];
+
+        // ====================================================================
+        // INICIALIZACIÓN DE THREE.JS
+        // ====================================================================
+
+        let scene, camera, renderer;
+        let controls; // Referencia a los controles de cámara
+        let planets = [];
+        let animationSpeed = 1.0;
+
+        const container = document.getElementById('container');
+
+        function init() {
+            // 1. Escena
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000000);
+
+            // 2. Cámara (Posición inicial más distante)
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(0, 50, 180); // Ángulo y distancia inicial más dinámico
+
+            // 3. Renderizador
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            container.appendChild(renderer.domElement);
+
+            // 4. Controles de Cámara (¡La clave de la vista dinámica!)
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true; // Suaviza los movimientos
+            controls.dampingFactor = 0.05; // Define la suavidad
+
+            // 5. Creación de planetas y el sol
+            createSolarSystem();
+
+            // 6. Controles de Interfaz
+            setupControls();
+
+            // 7. Manejo de eventos
+            window.addEventListener('resize', onWindowResize, false);
+
+            // 8. Iniciar el bucle de animación
+            animate();
+        }
+
+        function createSolarSystem() {
+            // --- CREAR EL SOL (Fuente de Luz) ---
+            const sunGeometry = new THREE.SphereGeometry(solarSystemConfig[0].radius, 32, 32);
+            const sunMaterial = new THREE.MeshBasicMaterial({ color: solarSystemConfig[0].color });
+            const sun = new THREE.Mesh(sunGeometry, sunMaterial);
+            sun.name = "Sol";
+            scene.add(sun);
+            planets.push({ mesh: sun, orbitalRadius: 0, orbitAngle: 0, period: 0 });
+
+            // Añadir luz ambiental para que los planetas sean visibles
+            const ambientLight = new THREE.AmbientLight(0x333333);
+            scene.add(ambientLight);
+
+            // Añadir luz direccional (simulando el Sol)
+            const directionalLight = new THREE.PointLight(0xFFFFFF, 1.5, 1000);
+            directionalLight.position.set(0, 0, 0);
+            scene.add(directionalLight);
+
+
+            // --- CREAR LOS PLANETAS ---
+            solarSystemConfig.slice(1).forEach(config => {
+                const geometry = new THREE.SphereGeometry(config.radius, 32, 32);
+                const material = new THREE.MeshLambertMaterial({ color: config.color });
+                const planetMesh = new THREE.Mesh(geometry, material);
+
+                // Almacenamos los datos del planeta
+                const planetData = {
+                    mesh: planetMesh,
+                    orbitalRadius: config.distance,
+                    orbitAngle: Math.random() * Math.PI * 2, // Inicio aleatorio
+                    period: config.period
+                };
+
+                // Añadir al sistema
+                scene.add(planetMesh);
+                planets.push(planetData);
+            });
+        }
+
+        // ====================================================================
+        // LÓGICA DE ANIMACIÓN
+        // ====================================================================
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // 1. Actualizar la posición de cada planeta en su órbita
+            planets.forEach(planet => {
+                if (planet.orbitalRadius > 0) {
+                    // Cálculo de la nueva posición usando trigonometría para la órbita circular
+                    const newAngle = planet.orbitAngle + (0.01 * planet.period * animationSpeed);
+
+                    planet.mesh.position.x = Math.cos(newAngle) * planet.orbitalRadius;
+                    planet.mesh.position.z = Math.sin(newAngle) * planet.orbitalRadius;
+                    planet.orbitAngle = newAngle;
+                }
+            });
+
+            // 2. ACTUALIZAR CONTROLES (CRUCIAL PARA EL MOVIMIENTO)
+            controls.update();
+
+            // 3. Renderizar la escena
+            renderer.render(scene, camera);
+        }
+
+        // ====================================================================
+        // GESTIÓN DE CONTROLES E INTERFAZ
+        // ====================================================================
+
+        function setupControls() {
+            const slider = document.getElementById('speedSlider');
+            const valueDisplay = document.getElementById('speedValue');
+
+            slider.addEventListener('input', (event) => {
+                animationSpeed = parseFloat(event.target.value);
+                valueDisplay.textContent = `Velocidad: ${animationSpeed.toFixed(1)}x`;
+            });
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Iniciar la aplicación
+        init();
+    </script>
+</body>
+
+</html>

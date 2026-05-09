@@ -1,0 +1,10 @@
+[
+  {
+    "text": "Crea un sistema solar para el sistema",
+    "type": "user"
+  },
+  {
+    "text": "<thought>Thinking Process:\n\n1.  **Analyze the Request:** The user wants to \"Create a solar system for the system.\"\n2.  **Interpret \"Solar System\":** In the context of a generative OS (EasyOS), a \"solar system\" likely means a complex, interactive, or visually rich application/skill that simulates or represents a solar system.\n3.  **Identify the Tool:** The appropriate tool for creating a custom application/skill is `easyos.buildskill`.\n4.  **Determine the Content (HTML/CSS/JS):** A solar system simulation requires HTML structure, CSS for styling (especially for the \"EasyOS aesthetic\" - glassmorphism, gradients), and JavaScript for the orbital mechanics/animation.\n5.  **Design the Skill:**\n    *   Name: Solar System (Sistema Solar)\n    *   Emoji: 🪐\n    *   HTML/JS/CSS: Need a basic canvas or div-based representation with orbiting elements. Since the prompt requires a single block of code, I must keep it concise but functional enough to represent the concept.\n\n6.  **Construct the Code (Self-Correction/Refinement):** A full, physics-accurate simulation is too complex for a single prompt. I will create a stylized, animated representation using CSS and basic JS to fulfill the request's spirit.\n\n    *   *Structure:* A container, a sun, and several orbiting planets.\n    *   *Animation:* Use CSS keyframes for rotation/orbiting.\n\n7.  **Formulate the Response:**\n    *   Acknowledge the request in the EasyOS persona (premium, aesthetic).\n    *   Execute the `easyos.buildskill` command with the generated code.\n\n8.  **Final Command Generation:** (See the resulting output for the specific code implementation.)</thought>\n¡Claro que sí! Como EasyOS iA, entiendo que buscas un elemento visualmente impresionante y dinámico. Crearé un \"Sistema Solar\" como una Skill personalizada, utilizando animaciones CSS para darle ese toque premium y de glassmorphism que caracteriza a EasyOS.\n\nAquí tienes el comando para construir tu nuevo Sistema Solar:",
+    "type": "ai"
+  }
+]
