@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Damas vs Máquina</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#2c3e50;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin:0;
+    padding:20px;
+}
+
+h1{
+    margin-bottom:10px;
+}
+
+#status{
+    margin-bottom:20px;
+    padding:10px 20px;
+    background:#34495e;
+    border-radius:6px;
+    font-weight:bold;
+}
+
+#board{
+    width:480px;
+    height:480px;
+    display:grid;
+    grid-template-columns:repeat(8,1fr);
+    border:5px solid #5d4037;
+    box-shadow:0 10px 20px rgba(0,0,0,0.5);
+}
+
+.square{
+    width:60px;
+    height:60px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.white-square{
+    background:#f0d9b5;
+}
+
+.black-square{
+    background:#b58863;
+}
+
+.piece{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    cursor:pointer;
+    position:relative;
+    transition:all 0.2s ease;
+}
+
+.piece:hover{
+    transform:scale(1.08);
+}
+
+.white{
+    background:white;
+    border:2px solid #ccc;
+}
+
+.black{
+    background:black;
+    border:2px solid #222;
+}
+
+.king::after{
+    content:'♔';
+    color:gold;
+    font-size:24px;
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+}
+
+.selected{
+    transform:scale(1.08);
+    box-shadow:
+        0 0 0 3px rgba(255,255,255,0.7),
+        0 0 15px rgba(255,255,255,0.6);
+}
+
+.highlight{
+    background:rgba(0,255,0,0.35)!important;
+}
+
+button{
+    margin-top:20px;
+    padding:10px 20px;
+    border:none;
+    background:#e74c3c;
+    color:white;
+    font-size:16px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#c0392b;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>Damas vs Máquina</h1>
+
+<div id="status">Turno: Jugador (Blancas)</div>
+
+<div id="board"></div>
+
+<button onclick="reiniciarJuego()">Reiniciar</button>
+
+<script>
+
+const boardElement = document.getElementById("board");
+const statusElement = document.getElementById("status");
+
+let board = [];
+let turn = 1;
+let selectedPiece = null;
+let validMoves = [];
+
+function initGame(){
+
+    board = [
+        [0,2,0,2,0,2,0,2],
+        [2,0,2,0,2,0,2,0],
+        [0,2,0,2,0,2,0,2],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [1,0,1,0,1,0,1,0],
+        [0,1,0,1,0,1,0,1],
+        [1,0,1,0,1,0,1,0]
+    ];
+
+    turn = 1;
+    selectedPiece = null;
+    validMoves = [];
+
+    renderBoard();
+    updateStatus();
+}
+
+function renderBoard(){
+
+    boardElement.innerHTML = "";
+
+    for(let r=0;r<8;r++){
+
+        for(let c=0;c<8;c++){
+
+            const square = document.createElement("div");
+
+            square.classList.add("square");
+
+            square.classList.add(
+                (r+c)%2===0
+                ? "white-square"
+                : "black-square"
+            );
+
+            // MOVIMIENTOS POSIBLES
+            if(validMoves.some(m => m.r===r && m.c===c)){
+
+                square.classList.add("highlight");
+
+                square.onclick = () => makeMove(r,c);
+            }
+
+            const value = board[r][c];
+
+            if(value!==0){
+
+                const piece = document.createElement("div");
+
+                piece.classList.add("piece");
+
+                if(value===1 || value===3){
+                    piece.classList.add("white");
+                }else{
+                    piece.classList.add("black");
+                }
+
+                if(value===3 || value===4){
+                    piece.classList.add("king");
+                }
+
+                // SELECCIONADA
+                if(
+                    selectedPiece &&
+                    selectedPiece.r===r &&
+                    selectedPiece.c===c
+                ){
+                    piece.classList.add("selected");
+                }
+
+                // CLICK SOLO JUGADOR
+                if(turn===1 && (value===1 || value===3)){
+                    piece.onclick = () => selectPiece(r,c);
+                }
+
+                square.appendChild(piece);
+            }
+
+            boardElement.appendChild(square);
+        }
+    }
+}
+
+function selectPiece(r,c){
+
+    selectedPiece = {
+        r:r,
+        c:c,
+        value:board[r][c]
+    };
+
+    validMoves = getValidMoves(r,c,board[r][c]);
+
+    renderBoard();
+}
+
+function makeMove(r,c){
+
+    if(!selectedPiece) return;
+
+    executeMove(
+        selectedPiece.r,
+        selectedPiece.c,
+        r,
+        c
+    );
+
+    const currentValue = board[r][c];
+
+    // MULTICAPTURA JUGADOR
+    const nextCaptures = getValidMoves(r,c,currentValue)
+        .filter(m => m.capture);
+
+    if(
+        Math.abs(r - selectedPiece.r) === 2 &&
+        nextCaptures.length > 0
+    ){
+
+        selectedPiece = {
+            r:r,
+            c:c,
+            value:currentValue
+        };
+
+        validMoves = nextCaptures;
+
+        renderBoard();
+
+        return;
+    }
+
+    selectedPiece = null;
+    validMoves = [];
+
+    turn = 2;
+
+    renderBoard();
+    updateStatus();
+
+    setTimeout(machineTurn,700);
+}
+
+function executeMove(startR,startC,targetR,targetC){
+
+    const value = board[startR][startC];
+
+    board[targetR][targetC] = value;
+    board[startR][startC] = 0;
+
+    // CAPTURA
+    if(Math.abs(targetR-startR)===2){
+
+        const midR = (targetR + startR)/2;
+        const midC = (targetC + startC)/2;
+
+        board[midR][midC] = 0;
+    }
+
+    // CORONAR
+    if(value===1 && targetR===0){
+        board[targetR][targetC] = 3;
+    }
+
+    if(value===2 && targetR===7){
+        board[targetR][targetC] = 4;
+    }
+}
+
+function getValidMoves(r,c,value){
+
+    let moves = [];
+
+    let directions = [];
+
+    // BLANCAS
+    if(value===1){
+
+        directions = [
+            {dr:-1,dc:-1},
+            {dr:-1,dc:1}
+        ];
+    }
+
+    // NEGRAS
+    if(value===2){
+
+        directions = [
+            {dr:1,dc:-1},
+            {dr:1,dc:1}
+        ];
+    }
+
+    // DAMAS
+    if(value===3 || value===4){
+
+        directions = [
+            {dr:-1,dc:-1},
+            {dr:-1,dc:1},
+            {dr:1,dc:-1},
+            {dr:1,dc:1}
+        ];
+    }
+
+    for(const dir of directions){
+
+        // MOVIMIENTO NORMAL
+        const nr = r + dir.dr;
+        const nc = c + dir.dc;
+
+        if(
+            nr>=0 && nr<8 &&
+            nc>=0 && nc<8 &&
+            board[nr][nc]===0
+        ){
+
+            moves.push({
+                r:nr,
+                c:nc,
+                capture:false
+            });
+        }
+
+        // CAPTURA
+        const jumpR = r + dir.dr*2;
+        const jumpC = c + dir.dc*2;
+
+        if(
+            jumpR>=0 && jumpR<8 &&
+            jumpC>=0 && jumpC<8
+        ){
+
+            const midR = r + dir.dr;
+            const midC = c + dir.dc;
+
+            const enemies =
+                (value===1 || value===3)
+                ? [2,4]
+                : [1,3];
+
+            if(
+                enemies.includes(board[midR][midC]) &&
+                board[jumpR][jumpC]===0
+            ){
+
+                moves.push({
+                    r:jumpR,
+                    c:jumpC,
+                    capture:true
+                });
+            }
+        }
+    }
+
+    return moves;
+}
+
+function getAllPossibleMoves(player){
+
+    let all = [];
+
+    for(let r=0;r<8;r++){
+
+        for(let c=0;c<8;c++){
+
+            const value = board[r][c];
+
+            const isPlayerPiece =
+                player===1
+                ? (value===1 || value===3)
+                : (value===2 || value===4);
+
+            if(isPlayerPiece){
+
+                const moves = getValidMoves(r,c,value);
+
+                for(const move of moves){
+
+                    all.push({
+                        startR:r,
+                        startC:c,
+                        targetR:move.r,
+                        targetC:move.c,
+                        capture:move.capture
+                    });
+                }
+            }
+        }
+    }
+
+    return all;
+}
+
+function machineTurn(){
+
+    let continueTurn = true;
+
+    while(continueTurn){
+
+        const allMoves = getAllPossibleMoves(2);
+
+        if(allMoves.length===0){
+
+            statusElement.innerText = "¡Ganaste!";
+            return;
+        }
+
+        const captures = allMoves.filter(m => m.capture);
+
+        const move =
+            captures.length>0
+            ? captures[Math.floor(Math.random()*captures.length)]
+            : allMoves[Math.floor(Math.random()*allMoves.length)];
+
+        executeMove(
+            move.startR,
+            move.startC,
+            move.targetR,
+            move.targetC
+        );
+
+        const movedValue = board[move.targetR][move.targetC];
+
+        // BUSCAR MÁS CAPTURAS PARA ESA MISMA PIEZA
+        const nextCaptures = getValidMoves(
+            move.targetR,
+            move.targetC,
+            movedValue
+        ).filter(m => m.capture);
+
+        if(move.capture && nextCaptures.length > 0){
+
+            // HACER OTRA CAPTURA AUTOMÁTICA
+            const nextMove =
+                nextCaptures[
+                    Math.floor(Math.random()*nextCaptures.length)
+                ];
+
+            move.startR = move.targetR;
+            move.startC = move.targetC;
+            move.targetR = nextMove.r;
+            move.targetC = nextMove.c;
+
+            executeMove(
+                move.startR,
+                move.startC,
+                move.targetR,
+                move.targetC
+            );
+
+            continueTurn = false;
+
+        }else{
+
+            continueTurn = false;
+        }
+    }
+
+    turn = 1;
+
+    renderBoard();
+    updateStatus();
+}
+
+function updateStatus(){
+
+    if(turn===1){
+
+        statusElement.innerText =
+            "Turno: Jugador (Blancas)";
+
+    }else{
+
+        statusElement.innerText =
+            "Turno: Máquina (Negras)";
+    }
+}
+
+function reiniciarJuego(){
+    initGame();
+}
+
+initGame();
+
+</script>
+
+</body>
+</html>

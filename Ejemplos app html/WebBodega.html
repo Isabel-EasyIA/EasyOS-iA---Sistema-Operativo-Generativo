@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Cava | Bodega de Vinos Premium</title>
+    <style>
+        /* --- Variables de Color y Reset --- */
+        :root {
+            --primary-color: #721c24;
+            --secondary-color: #f8f9fa;
+            --accent-color: #d4af37;
+            --text-dark: #333;
+            --text-light: #fff;
+            --font-main: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            --font-serif: 'Georgia', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--secondary-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-top: 80px; /* Espacio para el header fijo */
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- Header y Navegación --- */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .btn-cta {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 4px;
+            font-weight: bold;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-cta:hover {
+            background-color: #5a1216;
+        }
+
+        /* --- Secciones de Contenido --- */
+        .page-section {
+            display: none;
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 3px;
+            background-color: var(--accent-color);
+            margin: 10px auto 0;
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 0 1rem;
+            margin-top: 80px;
+        }
+
+        .hero-content h1 {
+            font-family: var(--font-serif);
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- Catálogo de Vinos --- */
+        .wine-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .wine-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .wine-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .wine-image {
+            height: 300px;
+            width: 100%;
+            object-fit: cover;
+            background-color: #f4f4f4;
+        }
+
+        .wine-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .wine-name {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .wine-region {
+            font-size: 0.9rem;
+            color: #777;
+            margin-bottom: 0.5rem;
+        }
+
+        .wine-description {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 0.5rem;
+        }
+
+        .wine-price {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .btn-buy {
+            display: inline-block;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .btn-buy:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* --- Sobre Nosotros --- */
+        .about-container {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .about-image img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 10px 10px 0 var(--accent-color);
+        }
+
+        .history-section {
+            background-color: #fff;
+            margin-top: 50px;
+            padding: 3rem;
+            border-radius: 8px;
+        }
+
+        .history-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* --- Contacto --- */
+        .contact-container {
+            display: flex;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .contact-info {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .contact-form-container {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        input, textarea, select {
+            padding: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+
+        .btn-submit {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .btn-submit:hover {
+            background-color: #5a1216;
+        }
+
+        /* --- Featured Section --- */
+        .featured {
+            background-color: #fff;
+            margin-top: 60px;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background-color: #222;
+            color: #aaa;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- Responsive Mobile --- */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .about-container, .contact-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navegación -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">La Cava</div>
+            <ul class="nav-links">
+                <li><a onclick="showPage('home')" id="nav-home" class="active">Inicio</a></li>
+                <li><a onclick="showPage('catalogo')" id="nav-catalogo">Catálogo</a></li>
+                <li><a onclick="showPage('nosotros')" id="nav-nosotros">Nosotros</a></li>
+                <li><a onclick="showPage('contacto')" id="nav-contacto" class="btn-cta">Reservar Tasting</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Página de Inicio -->
+    <section id="home" class="page-section active">
+        <div class="hero">
+            <div class="hero-content">
+                <h1>El Arte del Buen Vivir</h1>
+                <p>Descubre nuestra selección exclusiva de vinos de las mejores bodegas del mundo</p>
+                <a onclick="showPage('catalogo')" class="btn-cta" style="font-size: 1.1rem; padding: 0.8rem 2rem;">Ver Selección</a>
+            </div>
+        </div>
+
+        <section class="featured">
+            <h2 class="section-title">Vinos Destacados</h2>
+            <div class="wine-grid">
+                <div class="wine-card">
+                    <img src="https://images.unsplash.com/photo-1584916201218-f4242448447f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Vino Tinto" class="wine-image">
+                    <div class="wine-info">
+                        <h3 class="wine-name">Reserva Especial 2015</h3>
+                        <p class="wine-region">Valle Central, Chile</p>
+                        <p class="wine-description">Tinto robusto con notas de frutos rojos y madera</p>
+                        <p class="wine-price">$45.000 CLP</p>
+                        <a onclick="showPage('catalogo')" class="btn-buy">Ver Detalles</a>
+                    </div>
+                </div>
+                <div class="wine-card">
+                    <img src="https://images.unsplash.com/photo-1516594915697-87eb3b1c34a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Vino Blanco" class="wine-image">
+                    <div class="wine-info">
+                        <h3 class="wine-name">Sauvignon Blanc</h3>
+                        <p class="wine-region">Mar de Plata, Argentina</p>
+                        <p class="wine-description">Blanco fresco con notas cítricas y herbales</p>
+                        <p class="wine-price">$32.000 CLP</p>
+                        <a onclick="showPage('catalogo')" class="btn-buy">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a onclick="showPage('catalogo')" class="btn-cta">Ver Catálogo Completo</a>
+            </div>
+        </section>
+    </section>
+
+    <!-- Página de Catálogo -->
+    <section id="catalogo" class="page-section">
+        <h2 class="section-title">Nuestra Selección Premium</h2>
+        <div class="wine-grid">
+            <div class="wine-card">
+                <img src="https://images.unsplash.com/photo-1584916201218-f4242448447f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Vino Tinto Reserva" class="wine-image">
+                <div class="wine-info">
+                    <h3 class="wine-name">Reserva Especial 2015</h3>
+                    <p class="wine-region">Valle Central, Chile</p>
+                    <p class="wine-description">Tinto robusto con notas de frutos rojos y madera</p>
+                    <p class="wine-price">$45.000 CLP</p>
+                    <a onclick="alert('Producto añadido al carrito')" class="btn-buy">Añadir al Carrito</a>
+                </div>
+            </div>
+
+            <div class="wine-card">
+                <img src="https://images.unsplash.com/photo-1516594915697-87eb3b1c34a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Vino Blanco Sauvignon" class="wine-image">
+                <div class="wine-info">
+                    <h3 class="wine-name">Sauvignon Blanc</h3>
+                    <p class="wine-region">Mar de Plata, Argentina</p>
+                    <p class="wine-description">Blanco fresco con notas cítricas y herbales</p>
+                    <p class="wine-price">$32.000 CLP</p>
+                    <a onclick="alert('Producto añadido al carrito')" class="btn-buy">Añadir al Carrito</a>
+                </div>
+            </div>
+
+            <div class="wine-card">
+                <img src="https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Vino Tinto Cabernet" class="wine-image">
+                <div class="wine-info">
+                    <h3 class="wine-name">Cabernet Sauvignon</h3>
+                    <p class="wine-region">Napa Valley, USA</p>
+                    <p class="wine-description">Tinto intenso con notas de vainilla y especias</p>
+                    <p class="wine-price">$85.000 CLP</p>
+                    <a onclick="alert('Producto añadido al carrito')" class="btn-buy">Añadir al Carrito</a>
+                </div>
+            </div>
+
+            <div class="wine-card">
+                <img src="https://images.unsplash.com/photo-1559563362-c667b5d953d0?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Vino Rosado" class="wine-image">
+                <div class="wine-info">
+                    <h3 class="wine-name">Rosado de Tinto</h3>
+                    <p class="wine-region">Bordeaux, Francia</p>
+                    <p class="wine-description">Rosado elegante con notas florales</p>
+                    <p class="wine-price">$55.000 CLP</p>
+                    <a onclick="alert('Producto añadido al carrito')" class="btn-buy">Añadir al Carrito</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Página de Nosotros -->
+    <section id="nosotros" class="page-section">
+        <h2 class="section-title">Nuestra Pasión</h2>
+        <div class="about-container">
+            <div class="about-text">
+                <h3>Tradición y Excelencia</h3>
+                <p>En <strong>La Cava</strong>, entendemos el vino como mucho más que una bebida; es un compañero de vida. Fundada en 1995, nuestra bodega se dedica a curar los mejores añejos y presentarlos a los paladares más exigentes.</p>
+                <br>
+                <p>Nuestro equipo de enólogos trabaja directamente con viticultores en Chile, Francia y España para asegurar que cada botella cumpla con los más altos estándares de calidad y autenticidad.</p>
+                <br>
+                <h4>Nuestros Valores:</h4>
+                <ul>
+                    <li>✅ Calidad premium en cada botella</li>
+                    <li>✅ Sostenibilidad en nuestras prácticas</li>
+                    <li>✅ Pasión por la excelencia</li>
+                </ul>
+            </div>
+            <div class="about-image">
+                <img src="https://images.unsplash.com/photo-1560493676-04071c504133?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Bodeguero probando vino">
+            </div>
+        </div>
+
+        <div class="history-section">
+            <h2 class="section-title" style="margin-bottom: 2rem;">Nuestra Historia</h2>
+            <div class="history-content">
+                <p>Desde nuestros inicios, La Cava ha sido sinónimo de calidad y tradición. Lo que comenzó como una pequeña bodega familiar en 1995, hoy es una de las bodegas más prestigiosas de la región.</p>
+                <br>
+                <p>Nuestra filosofía se basa en el respeto por la tierra, el cuidado de las uvas y el perfeccionamiento constante de nuestros procesos de elaboración. Cada año, seleccionamos cuidadosamente las mejores cosechas para ofrecer a nuestros clientes una experiencia inolvidable.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Página de Contacto -->
+    <section id="contacto" class="page-section">
+        <h2 class="section-title">Contáctanos</h2>
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Información de Contacto</h3>
+                <p>📍 Av. Principal 1234, Ciudad</p>
+                <p>📞 +56 9 1234 5678</p>
+                <p>✉️ contacto@lacava.cl</p>
+                <p>⏰ Lun - Vie: 9:00 - 18:00</p>
+            </div>
+            <div class="contact-form-container">
+                <form class="contact-form" onsubmit="event.preventDefault(); alert('¡Mensaje enviado con éxito!');">
+                    <input type="text" placeholder="Tu Nombre" required>
+                    <input type="email" placeholder="Tu Correo Electrónico" required>
+                    <input type="tel" placeholder="Tu Teléfono">
+                    <select required>
+                        <option value="" disabled selected>Asunto</option>
+                        <option value="pedido">Realizar Pedido</option>
+                        <option value="reserva">Reservar Tasting</option>
+                        <option value="info">Información</option>
+                        <option value="otro">Otro</option>
+                    </select>
+                    <textarea rows="5" placeholder="¿En qué podemos ayudarte?" required></textarea>
+                    <button type="submit" class="btn-submit">Enviar Mensaje</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <h3>La Cava</h3>
+            <p>Calidad y tradición en cada copa.</p>
+            <p>📍 Av. Principal 1234, Ciudad</p>
+            <p>📞 +56 9 1234 5678 | ✉️ contacto@lacava.cl</p>
+            <p>&copy; 2023 La Cava. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript para navegación SPA -->
+    <script>
+        function showPage(pageId) {
+            // Ocultar todas las secciones
+            const sections = document.querySelectorAll('.page-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Mostrar la sección seleccionada
+            const selectedSection = document.getElementById(pageId);
+            if (selectedSection) {
+                selectedSection.classList.add('active');
+            }
+
+            // Actualizar el estado activo en la navegación
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+
+            const activeLink = document.getElementById('nav-' + pageId);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+
+            // Hacer scroll al top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Cargar la página inicial al abrir la web
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('home');
+        });
+    </script>
+</body>
+</html>
